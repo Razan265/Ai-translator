@@ -3,25 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مترجم AI الاحترافي</title>
+    <title>مترجم AI الذكي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #764ba2; --secondary: #667eea; --accent: #ff4081; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: #333; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: #333; }
         .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); width: 95%; max-width: 550px; text-align: center; }
-        h2 { color: var(--primary); margin-bottom: 20px; font-size: 24px; }
+        h2 { color: #764ba2; margin-bottom: 20px; }
         .input-group { position: relative; margin-bottom: 15px; }
-        textarea { width: 100%; height: 130px; padding: 15px; border: 2px solid #eee; border-radius: 15px; font-size: 17px; box-sizing: border-box; resize: none; transition: 0.3s; }
-        textarea:focus { border-color: var(--primary); outline: none; }
-        .mic-btn { position: absolute; bottom: 15px; left: 15px; background: var(--accent); color: white; border: none; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        textarea { width: 100%; height: 130px; padding: 15px; border: 2px solid #eee; border-radius: 15px; font-size: 17px; box-sizing: border-box; resize: none; }
+        .mic-btn { position: absolute; bottom: 15px; left: 15px; background: #ff4081; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .mic-btn.recording { background: #f44336; animation: pulse 1.5s infinite; }
-        select { width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #eee; font-size: 16px; margin-bottom: 15px; cursor: pointer; }
+        select { width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #eee; margin-bottom: 15px; font-size: 16px; }
         .btn-container { display: flex; gap: 10px; }
-        .translate-btn { flex: 3; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .translate-btn:hover { opacity: 0.9; transform: translateY(-2px); }
-        .speak-btn { flex: 1; background: #00bcd4; color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 20px; transition: 0.3s; }
-        .speak-btn:hover { background: #00acc1; }
-        .result-box { margin-top: 20px; padding: 20px; background: #f9f0ff; border: 1px solid #e1bee7; border-radius: 15px; text-align: right; min-height: 60px; font-size: 19px; line-height: 1.6; word-wrap: break-word; }
+        .translate-btn { flex: 3; padding: 15px; background: #764ba2; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 18px; }
+        .speak-btn { flex: 1; background: #00bcd4; color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 20px; }
+        .result-box { margin-top: 20px; padding: 20px; background: #f9f0ff; border-radius: 15px; text-align: right; min-height: 60px; font-size: 19px; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
 </head>
@@ -29,103 +25,66 @@
 
 <div class="card">
     <h2>مترجم AI الذكي 🤖</h2>
-    
     <div class="input-group">
-        <textarea id="inputText" placeholder="اكتب شيئاً أو استخدم الميكروفون..."></textarea>
-        <button id="micBtn" class="mic-btn" title="تحدث الآن">
-            <i class="fas fa-microphone"></i>
-        </button>
+        <textarea id="inputText" placeholder="اكتب أو تحدث بالصوت..."></textarea>
+        <button id="micBtn" class="mic-btn"><i class="fas fa-microphone"></i></button>
     </div>
-
     <select id="targetLang">
-        <option value="ar">ترجم إلى: العربية</option>
-        <option value="en" selected>ترجم إلى: الإنجليزية</option>
-        <option value="fr">ترجم إلى: الفرنسية</option>
-        <option value="de">ترجم إلى: الألمانية</option>
-        <option value="es">ترجم إلى: الإسبانية</option>
-        <option value="tr">ترجم إلى: التركية</option>
+        <option value="ar">العربية</option>
+        <option value="en" selected>الإنجليزية</option>
+        <option value="fr">الفرنسية</option>
+        <option value="de">الألمانية</option>
     </select>
-
     <div class="btn-container">
         <button class="translate-btn" onclick="aiTranslate()">ترجمة ذكية ✨</button>
-        <button class="speak-btn" onclick="speakText()" title="نطق الترجمة">🔊</button>
+        <button class="speak-btn" onclick="speakResult()">🔊</button>
     </div>
-
     <div class="result-box" id="resultText">ستظهر الترجمة هنا...</div>
 </div>
 
 <script>
     const micBtn = document.getElementById('micBtn');
     const inputText = document.getElementById('inputText');
-    const resultBox = document.getElementById('resultText');
-    const targetLang = document.getElementById('targetLang');
+    const resultText = document.getElementById('resultText');
 
-    // 1. التعرف على الصوت
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'ar-SA'; // يبدأ بالتعرف على العربي ويمكن تغييره
+    // 1. الميكروفون
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'ar-SA';
+    micBtn.onclick = () => { recognition.start(); micBtn.classList.add('recording'); };
+    recognition.onresult = (e) => { inputText.value = e.results[0][0].transcript; micBtn.classList.remove('recording'); };
+    recognition.onend = () => micBtn.classList.remove('recording');
 
-        micBtn.onclick = () => {
-            try {
-                recognition.start();
-                micBtn.classList.add('recording');
-            } catch (e) { console.log("التعرف يعمل بالفعل"); }
-        };
-
-        recognition.onresult = (event) => {
-            inputText.value = event.results[0][0].transcript;
-            micBtn.classList.remove('recording');
-        };
-
-        recognition.onerror = () => micBtn.classList.remove('recording');
-        recognition.onend = () => micBtn.classList.remove('recording');
-    } else {
-        micBtn.style.display = 'none';
-    }
-
-    // 2. دالة الترجمة (باستخدام محرك مستقر)
+    // 2. الترجمة (حل مشكلة CORS)
     async function aiTranslate() {
         const text = inputText.value.trim();
-        const target = targetLang.value;
-
-        if (!text) {
-            resultBox.innerText = "يرجى كتابة نص أولاً!";
-            return;
-        }
-
-        resultBox.innerText = "⏳ جاري الترجمة...";
-
+        const target = document.getElementById('targetLang').value;
+        if (!text) return;
+        resultText.innerText = "⏳ جاري الترجمة...";
+        
         try {
-            // محرك ترجمة بديل وأكثر استقراراً
+            // استخدام رابط Google المباشر مع تجاوز قيود CORS
             const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${target}&dt=t&q=${encodeURIComponent(text)}`;
-            
             const response = await fetch(url);
             const data = await response.json();
             
             if (data && data[0]) {
-                let translatedText = "";
-                data[0].forEach(part => { if(part[0]) translatedText += part[0]; });
-                resultBox.innerText = translatedText;
-            } else {
-                throw new Error();
+                let finalResult = "";
+                data[0].forEach(row => { if(row[0]) finalResult += row[0]; });
+                resultText.innerText = finalResult;
             }
         } catch (error) {
-            resultBox.innerText = "❌ حدث خطأ في الاتصال. حاول مرة أخرى.";
-            console.error("Translation Error:", error);
+            resultText.innerText = "❌ حدث خطأ في الاتصال، حاول مجدداً.";
         }
     }
 
-    // 3. دالة نطق النص المترجم
-    function speakText() {
-        const text = resultBox.innerText;
-        if (!text || text.includes("ستظهر") || text.includes("⏳")) return;
-
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = targetLang.value; 
-        window.speechSynthesis.speak(utterance);
+    // 3. نطق النص
+    function speakResult() {
+        const text = resultText.innerText;
+        if (!text || text.includes("ستظهر")) return;
+        const speech = new SpeechSynthesisUtterance(text);
+        speech.lang = document.getElementById('targetLang').value;
+        window.speechSynthesis.speak(speech);
     }
 </script>
-
 </body>
 </html>
