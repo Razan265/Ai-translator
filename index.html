@@ -15,7 +15,9 @@
         .mic-btn { position: absolute; bottom: 10px; left: 10px; background: #ff4081; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
         .mic-btn.recording { background: #f44336; box-shadow: 0 0 15px rgba(244,67,54,0.5); animation: pulse 1.5s infinite; }
         select { width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #eee; font-size: 16px; margin-bottom: 15px; background: #f9f9f9; }
-        button.translate-btn { width: 100%; padding: 15px; background: #764ba2; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-group { display: flex; gap: 10px; }
+        button.translate-btn { flex: 3; padding: 15px; background: #764ba2; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button.speak-btn { flex: 1; background: #00bcd4; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 20px; }
         button.translate-btn:hover { background: #5e3a8a; }
         .result-box { margin-top: 20px; padding: 20px; background: #f3e5f5; border-radius: 12px; text-align: right; min-height: 60px; font-size: 18px; position: relative; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
@@ -24,7 +26,7 @@
 <body>
 
 <div class="card">
-    <h2>مترجم AI الذكي </h2>
+    <h2>مترجم AI الذكي 🤖</h2>
     
     <div class="input-group">
         <textarea id="inputText" placeholder="تحدث أو اكتب بأي لغة..."></textarea>
@@ -41,13 +43,16 @@
         <option value="es">ترجم إلى: الإسبانية</option>
     </select>
 
-    <button class="translate-btn" onclick="aiTranslate()">ترجمة ذكية </button>
+    <div class="btn-group">
+        <button class="translate-btn" onclick="aiTranslate()">ترجمة ذكية ✨</button>
+        <button class="speak-btn" onclick="speakText()">🔊</button>
+    </div>
 
     <div class="result-box" id="resultText">ستظهر الترجمة هنا...</div>
 </div>
 
 <script>
-    // إعداد التعرف على الصوت
+    // 1. إعداد التعرف على الصوت
     const micBtn = document.getElementById('micBtn');
     const inputText = document.getElementById('inputText');
     const recognition = window.SpeechRecognition || window.webkitSpeechRecognition ? new (window.SpeechRecognition || window.webkitSpeechRecognition)() : null;
@@ -55,59 +60,39 @@
     if (recognition) {
         recognition.continuous = false;
         recognition.interimResults = false;
-
-        micBtn.onclick = () => {
-            recognition.start();
-            micBtn.classList.add('recording');
-        };
-
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            inputText.value = transcript;
-            micBtn.classList.remove('recording');
-        };
-
+        micBtn.onclick = () => { recognition.start(); micBtn.classList.add('recording'); };
+        recognition.onresult = (event) => { inputText.value = event.results[0][0].transcript; micBtn.classList.remove('recording'); };
         recognition.onerror = () => micBtn.classList.remove('recording');
         recognition.onend = () => micBtn.classList.remove('recording');
     } else {
         micBtn.style.display = 'none';
-        alert.("متصفحك لا يدعم خاصية التحدث.");
     }
 
-    // وظيفة الترجمة باستخدام الذكاء الاصطناعي (اكتشاف تلقائي)
+    // 2. وظيفة الترجمة
     async function aiTranslate() {
         const text = inputText.value;
         const target = document.getElementById('targetLang').value;
         const resultBox = document.getElementById('resultText');
-
         if (!text) return;
-
         resultBox.innerText = "جاري التحليل والترجمة...";
-
         try {
-            // نستخدم 'auto' في مكان لغة المصدر ليفهمها الـ AI تلقائياً
             const response = await fetch(`https://lingva.ml/api/v1/auto/${target}/${encodeURIComponent(text)}`);
             const data = await response.json();
-            
-            if (data.translation) {
-                resultBox.innerHTML = `<strong>الترجمة:</strong><br>${data.translation}`;
-            } else {
-                resultBox.innerText = "تعذر فهم النص، حاول مجدداً.";
-            }
+            resultBox.innerText = data.translation || "تعذر الفهم";
         } catch (error) {
             resultBox.innerText = "خطأ في الاتصال بالسيرفر.";
-       
         }
-        
     }
-    < script>
-      Function speakText() {
-    const text = document.getElementById('outputText').innerText;
-    const utterance = new SpeechSynthesisUtterance(text);
-    // English
-    utterance.lang = document.getElementById('targetLang').value; 
-    window.speechSynthesis.speak(utterance);
-}  
+
+    // 3. وظيفة نطق النص
+    function speakText() {
+        const text = document.getElementById('resultText').innerText;
+        const lang = document.getElementById('targetLang').value;
+        if(!text || text.includes("ستظهر")) return;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang; 
+        window.speechSynthesis.speak(utterance);
+    }
 </script>
 
 </body>
