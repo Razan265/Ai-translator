@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مترجم الذكاء الاصطناعي</title>
+    <title>Ai translator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: #333; }
@@ -24,7 +24,7 @@
 <body>
 
 <div class="card">
-    <h2>مترجم AI الذكي 🤖</h2>
+    <h2>مترجم AI الذكي </h2>
     
     <div class="input-group">
         <textarea id="inputText" placeholder="تحدث أو اكتب بأي لغة..."></textarea>
@@ -41,7 +41,7 @@
         <option value="es">ترجم إلى: الإسبانية</option>
     </select>
 
-    <button class="translate-btn" onclick="aiTranslate()">ترجمة ذكية ✨</button>
+    <button class="translate-btn" onclick="aiTranslate()">ترجمة ذكية </button>
 
     <div class="result-box" id="resultText">ستظهر الترجمة هنا...</div>
 </div>
@@ -71,7 +71,7 @@
         recognition.onend = () => micBtn.classList.remove('recording');
     } else {
         micBtn.style.display = 'none';
-        alert("متصفحك لا يدعم خاصية التحدث.");
+        alert.("متصفحك لا يدعم خاصية التحدث.");
     }
 
     // وظيفة الترجمة باستخدام الذكاء الاصطناعي (اكتشاف تلقائي)
@@ -96,8 +96,18 @@
             }
         } catch (error) {
             resultBox.innerText = "خطأ في الاتصال بالسيرفر.";
+       
         }
+        
     }
+    < script>
+      Function speakText() {
+    const text = document.getElementById('outputText').innerText;
+    const utterance = new SpeechSynthesisUtterance(text);
+    // English
+    utterance.lang = document.getElementById('targetLang').value; 
+    window.speechSynthesis.speak(utterance);
+}  
 </script>
 
 </body>
